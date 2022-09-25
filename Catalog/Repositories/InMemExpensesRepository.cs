@@ -41,5 +41,22 @@ namespace Catalog.Repositories
         {
             return expenses.Where(expense => expense.Id == id).SingleOrDefault();
         }
+
+        public void CreatExpense(Expense expense)
+        {
+            expenses.Add(expense);
+        }
+
+        public void UpdateItem(Expense expense)
+        {
+            var index=expenses.FindIndex(existingExpense=>existingExpense.Id==expense.Id);
+            expenses[index]=expense;
+        }
+
+        public void DeleteItem(Guid id)
+        {
+            var index=expenses.FindIndex(existingExpense=>existingExpense.Id==id);
+            expenses.RemoveAt(index);
+        }
     }
 }

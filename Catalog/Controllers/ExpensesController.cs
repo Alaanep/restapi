@@ -29,5 +29,44 @@ namespace Catalog.Controllers{
             }
             return Ok(expense.AsDto());
         }
+        [HttpPost]//post /expenses
+        public ActionResult<ExpenseDto>CreateExpense(CreateExpenseDto expenseDto){
+            Expense expense = new (){
+                Id=Guid.NewGuid(),
+                Description=expenseDto.Description,
+                Category=expenseDto.Category,
+                Amount=expenseDto.Amount,
+                Date=expenseDto.Date
+            };
+            repository.CreatExpense(expense);
+            return CreatedAtAction(nameof(GetExpense), new{id=expense.Id}, expense.AsDto());
+        }
+
+        [HttpPut("{id}")] //put /expenses/{id}
+        public ActionResult UpdateExpense(Guid id,UpdateExpenseDto expenseDto){
+            var existingExpense = repository.GetExpense(id);
+            if(existingExpense is null){
+                return NotFound();
+            }
+            Expense updatedExpense = existingExpense with {
+                Description=expenseDto.Description,
+                Category=expenseDto.Category,
+                Amount=expenseDto.Amount,
+                Date=expenseDto.Date
+            };
+            repository.UpdateItem(updatedExpense);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")] //delete /expenses/{id}
+        public ActionResult DeleteExpense(Guid id){
+            var existingExpense = repository.GetExpense(id);
+            if(existingExpense is null){
+                return NotFound();
+            }
+            repository.DeleteItem(id);
+            return NoContent();
+        }
+
     }
 }
